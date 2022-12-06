@@ -1,0 +1,1 @@
+ALTER TABLE `{prefix}user` DROP `user_group_end_time`

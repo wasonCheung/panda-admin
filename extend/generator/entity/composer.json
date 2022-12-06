@@ -1,0 +1,48 @@
+{
+  "name": "dodo-it/entity-generator",
+  "type": "library",
+  "description": "Entity generator from database for almost any DBAL",
+  "keywords": [
+    "Entity", "pdo", "mysql", "database", "table", "generator", "nette"],
+  "license": ["MIT"],
+  "authors": [
+    {
+      "name": "Dalibor Korpar"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "DodoIt\\EntityGenerator\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DodoIt\\EntityGenerator\\Tests\\": "tests",
+      "Examples\\": "examples"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "nette/utils": "^3.0",
+    "nette/php-generator": "^3.0",
+    "doctrine/inflector": "^2.0"
+  },
+  "require-dev": {
+    "contributte/qa": "^0.1",
+    "phpunit/phpunit": ">=9.0",
+    "phpstan/phpstan-deprecation-rules": "^1.0",
+    "phpstan/phpstan-strict-rules": "^1.0"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.2.x-dev"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
