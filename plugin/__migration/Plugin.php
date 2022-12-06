@@ -2,7 +2,7 @@
 
 namespace plugin\__migration;
 
-use plugin\__plugin\Base;
+use plugin\__plugin\PluginBase;
 use plugin\__plugin\Helper;
 use think\migration\Creator;
 
@@ -11,7 +11,7 @@ use think\migration\Creator;
  * @Author: WasonCheung
  * @Description: 数据库迁移工具
  */
-class Plugin extends Base
+class Plugin extends PluginBase
 {
     protected function runCli(): void
     {

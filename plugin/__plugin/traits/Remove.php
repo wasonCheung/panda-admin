@@ -3,7 +3,7 @@
 namespace plugin\__plugin\traits;
 
 use plugin\__plugin\exception\PluginException;
-use plugin\__plugin\Base;
+use plugin\__plugin\PluginBase;
 use util\FileUtil;
 
 trait Remove
@@ -16,8 +16,8 @@ trait Remove
      */
     final public function remove(): bool
     {
-        if ($this->status !== Base::STATUS_WAIT4INSTALL) {
-            throw new PluginException(sprintf('删除中止,插件状态必须为"待安装(%s)"', Base::STATUS_WAIT4INSTALL));
+        if ($this->status !== PluginBase::STATUS_WAIT4INSTALL) {
+            throw new PluginException(sprintf('删除中止,插件状态必须为"待安装(%s)"', PluginBase::STATUS_WAIT4INSTALL));
         }
         if ($this->__remove()) {
             return true;

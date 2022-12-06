@@ -4,7 +4,7 @@ namespace plugin\__plugin;
 
 use plugin\__plugin\command\PluginMake;
 
-class Plugin extends Base
+class Plugin extends PluginBase
 {
     protected function runCli(): void
     {

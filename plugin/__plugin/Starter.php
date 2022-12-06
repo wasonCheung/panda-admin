@@ -37,7 +37,7 @@ class Starter
     private function configLoad(): void
     {
         foreach (Manager::running()->list() as $plugin) {
-            /*** @var Base $plugin */
+            /*** @var PluginBase $plugin */
             $configPath = $plugin->getConfigPath();
             if (!is_dir($configPath)) {
                 continue;
@@ -71,7 +71,7 @@ class Starter
     {
         foreach (Manager::running()->list() as $plugin) {
             /**
-             * @var Base $plugin
+             * @var PluginBase $plugin
              */
             $plugin->run();
 

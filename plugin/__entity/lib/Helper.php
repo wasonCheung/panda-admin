@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace generator\entity;
+namespace plugin\__entity\lib;
 
 use Doctrine\Inflector\InflectorFactory;
 

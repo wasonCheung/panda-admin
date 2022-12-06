@@ -32,18 +32,18 @@ class Manager
     ): array {
         $res = [];
         // 当前运行环境
-        $mode = $runningInConsole ? Base::MODE_CLI : Base::MODE_CGI;
-        $debug = $debug ? Base::DEBUG_ONLY : Base::DEBUG_NOT;
+        $mode = $runningInConsole ? PluginBase::MODE_CLI : PluginBase::MODE_CGI;
+        $debug = $debug ? PluginBase::DEBUG_ONLY : PluginBase::DEBUG_NOT;
         foreach (self::scanAllPlugins($pluginPath, $namespace) as $plugin) {
             if ($plugin['info']['status'] !== $status) {
                 continue;
             }
 
-            if ($plugin['info']['debug'] !== Base::DEBUG_BOTH && $plugin['info']['debug'] !== $debug) {
+            if ($plugin['info']['debug'] !== PluginBase::DEBUG_BOTH && $plugin['info']['debug'] !== $debug) {
                 continue;
             }
 
-            if ($plugin['info']['mode'] !== Base::MODE_BOTH && $plugin['info']['mode'] !== $mode) {
+            if ($plugin['info']['mode'] !== PluginBase::MODE_BOTH && $plugin['info']['mode'] !== $mode) {
                 continue;
             }
 
@@ -89,7 +89,7 @@ class Manager
      * @param string $namespace
      * @param string $name
      * @param bool $makeInstance
-     * @return array|Base
+     * @return array|PluginBase
      * @Data: 2022/12/3
      * @Author: WasonCheung
      * @Description: 根据名字获取插件对象
@@ -99,7 +99,7 @@ class Manager
         string $namespace,
         string $name,
         bool $makeInstance = false
-    ): array|Base {
+    ): array|PluginBase {
         $path = $pluginPath . $name . DIRECTORY_SEPARATOR;
         // 插件信息文件
         $info = $path . 'meta' . DIRECTORY_SEPARATOR . 'info.php';
@@ -134,12 +134,12 @@ class Manager
     /**
      * @param string $class
      * @param array $vars
-     * @return Base
+     * @return PluginBase
      * @Data: 2022/12/3
      * @Author: WasonCheung
      * @Description: 创建实例
      */
-    public static function makeInstance(string $class, array $vars = []): Base
+    public static function makeInstance(string $class, array $vars = []): PluginBase
     {
         return app($class, $vars);
     }

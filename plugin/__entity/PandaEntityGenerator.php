@@ -1,11 +1,11 @@
 <?php
 
-namespace generator;
+namespace plugin\__entity;
 
-use generator\entity\Config;
-use generator\entity\GeneratorPdoFactory;
+
 use PDO;
 use PHPUnit\Framework\TestCase;
+use plugin\__entity\lib\Config;
 use think\App;
 use think\facade\Config as ThinkConfig;
 
@@ -44,7 +44,6 @@ class PandaEntityGenerator extends TestCase
         $config->generatePhpDocProperties = true;
 
 
-        $config->toAarray = true;
 
         $config->suffix = 'Entity';
 

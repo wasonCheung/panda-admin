@@ -1,6 +1,6 @@
 <?php
 
-use plugin\__plugin\Base;
+use plugin\__plugin\PluginBase;
 
 return array(
     'title' => '数据库迁移工具',
@@ -8,9 +8,9 @@ return array(
     'author' => 'wasonCheung',
     'website' => 'https://www.pandacms.vip',
     'version' => '1.0.0',
-    'status' => Base::STATUS_ENABLE,
-    'mode' => Base::MODE_CLI,
+    'status' => PluginBase::STATUS_ENABLE,
+    'mode' => PluginBase::MODE_CLI,
     'type' => 'dev',
     'priority' => 2,
-    'debug' => Base::DEBUG_ONLY
+    'debug' => PluginBase::DEBUG_ONLY
 );

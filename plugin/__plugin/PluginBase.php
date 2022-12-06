@@ -28,7 +28,7 @@ use think\App;
  * @method bool update() 更新
  * @method bool remove() 移除
  */
-abstract class Base
+abstract class PluginBase
 {
     // 命令行
     public const MODE_CLI = 'cli';
@@ -50,6 +50,8 @@ abstract class Base
     public const STATUS_WAIT4INSTALL = 'wait4install';
     // 等待更新
     public const STATUS_WAIT4UPDATE = 'wait4update';
+
+
     /**
      * @var string 插件名
      */

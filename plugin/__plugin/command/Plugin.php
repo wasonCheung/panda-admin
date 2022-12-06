@@ -3,7 +3,7 @@
 namespace plugin\__plugin\command;
 
 use plugin\__plugin\Manager;
-use plugin\__plugin\Base as PluginBase;
+use plugin\__plugin\PluginBase as PluginBase;
 use think\console\Command;
 use think\console\Input;
 use think\console\input\Argument;
@@ -43,16 +43,11 @@ class Plugin extends Command
             return false;
         }
 
-        if (method_exists($plugin, $action)) {
-            foreach ($plugin->getInfo() as $key => $value) {
-                $output->writeln("$key: $value");
-            }
-            $plugin->{$action}();
-            $output->writeln("[ {$plugin->name} ] $action 成功");
-            return true;
+        foreach ($plugin->getInfo() as $key => $value) {
+            $output->writeln("$key: $value");
         }
-
-        $output->writeln("<error>不支持此操作:{$action}</error>");
-        return false;
+        $plugin->{$action}();
+        $output->writeln("[ {$plugin->name} ] $action 成功");
+        return true;
     }
 }

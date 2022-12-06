@@ -1,6 +1,6 @@
 <?php
 
-use plugin\__plugin\Base;
+use plugin\__plugin\PluginBase;
 
 return
     array(
@@ -9,9 +9,9 @@ return
         'author' => 'wasonCheung',
         'website' => 'https://www.pandacms.vip',
         'version' => '1.0.0',
-        'status' => Base::STATUS_ENABLE,
+        'status' => PluginBase::STATUS_ENABLE,
         'type' => 'system',
         'priority' => 1,
-        'mode' => Base::MODE_BOTH,
-        'debug' => Base::DEBUG_BOTH
+        'mode' => PluginBase::MODE_BOTH,
+        'debug' => PluginBase::DEBUG_BOTH
     );

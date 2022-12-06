@@ -3,7 +3,7 @@
 namespace plugin\__plugin\provider;
 
 use plugin\__plugin\Manager;
-use plugin\__plugin\Base;
+use plugin\__plugin\PluginBase;
 use think\App;
 
 /**
@@ -52,7 +52,7 @@ class Running
 
         // 所有启动的插件
         $enables = Manager::findWith(
-            Base::STATUS_ENABLE,
+            PluginBase::STATUS_ENABLE,
             $this->pluginPath,
             $this->namespace,
             $this->app->runningInConsole(),

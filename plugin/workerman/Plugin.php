@@ -2,13 +2,13 @@
 
 namespace plugin\workerman;
 
-use plugin\__plugin\Base;
+use plugin\__plugin\PluginBase;
 use plugin\__plugin\Helper;
 use plugin\workerman\command\Worker;
 use think\Cookie;
 use think\Request;
 
-class Plugin extends Base
+class Plugin extends PluginBase
 {
     protected function runInCli(): void
     {

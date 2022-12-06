@@ -3,7 +3,7 @@
 namespace plugin\__plugin\provider;
 
 use plugin\__plugin\Manager;
-use plugin\__plugin\Base;
+use plugin\__plugin\PluginBase;
 use think\Lang as ThinkLang;
 
 /**
@@ -32,7 +32,7 @@ class Lang extends ThinkLang
         $log = $this->app->log;
         foreach ($plugins as $plugin) {
             /**
-             * @var Base $plugin
+             * @var PluginBase $plugin
              */
             $langFiles = glob($plugin->getLangPath() . $langset . '.*');
             if ($langFiles) {

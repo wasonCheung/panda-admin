@@ -3,7 +3,7 @@
 namespace plugin\__plugin\traits;
 
 use plugin\__plugin\exception\PluginException;
-use plugin\__plugin\Base;
+use plugin\__plugin\PluginBase;
 
 trait Uninstall
 {
@@ -15,11 +15,11 @@ trait Uninstall
      */
     final public function uninstall(): bool
     {
-        if ($this->status !== Base::STATUS_DISABLE) {
-            throw new PluginException(sprintf('卸载中止,插件状态必须为"停用(%s)"', Base::STATUS_DISABLE));
+        if ($this->status !== PluginBase::STATUS_DISABLE) {
+            throw new PluginException(sprintf('卸载中止,插件状态必须为"停用(%s)"', PluginBase::STATUS_DISABLE));
         }
         if ($this->__uninstall()) {
-            $this->status = Base::STATUS_WAIT4INSTALL;
+            $this->status = PluginBase::STATUS_WAIT4INSTALL;
             return true;
         }
         throw new PluginException('未知原因导致卸载失败,请检查!');
