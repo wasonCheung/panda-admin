@@ -1,6 +1,6 @@
 <?php
 
-namespace app;
+namespace plugin\__panda;
 
 use think\exception\ValidateException;
 use think\Request;
@@ -20,7 +20,7 @@ class Handle extends \think\exception\Handle
      * Render an exception into an HTTP response.
      *
      * @access public
-     * @param \app\Request $request
+     * @param Request $request
      * @param Throwable $e
      * @return Response
      */

@@ -2,6 +2,7 @@
 
 namespace plugin\__panda;
 
+use plugin\__panda\tool\RuleBuilder;
 use think\Validate as ThinkValidate;
 
 /**

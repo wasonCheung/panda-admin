@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\__panda;
+namespace plugin\__panda\tool;
 
 use think\exception\InvalidArgumentException;
 

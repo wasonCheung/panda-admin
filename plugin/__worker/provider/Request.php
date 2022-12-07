@@ -14,6 +14,12 @@ use Workerman\Protocols\Http\Request as WorkerRequest;
  */
 class Request extends ThinkRequest
 {
+    protected $filter = [
+        'strip_tags',
+        'htmlspecialchars',
+        'trim',
+    ];
+
     public static function __make(App $app): Request
     {
         $thinkRequest = parent::__make($app);

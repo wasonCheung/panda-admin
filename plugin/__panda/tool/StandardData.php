@@ -1,5 +1,5 @@
 <?php
-namespace plugin\__panda;
+namespace plugin\__panda\tool;
 
 use think\Response;
 use think\response\Json;
