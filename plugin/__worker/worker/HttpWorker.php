@@ -107,7 +107,10 @@ class HttpWorker extends BaseWorker
             ->withStatus($thinkResponse->getCode())
             ->withHeaders($thinkResponse->getHeader())
             ->withBody(ob_get_clean());
-        $connection->send($workerResponse);
+
+        strtolower($workerRequest->header('connection')) === 'keep-alive' ?
+            $connection->send($workerResponse) :
+            $connection->close($workerResponse);
     }
 
     /**
