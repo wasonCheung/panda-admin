@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\workerman;
+namespace plugin\__worker\provider;
 
 use think\App;
 
@@ -9,7 +9,7 @@ use think\App;
  * @Author: WasonCheung
  * @Description worker application
  */
-class WorkerApplication extends App
+class Application extends App
 {
     /**
      * @Data: 2022/11/29

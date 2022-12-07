@@ -1,8 +1,8 @@
 <?php
 
-namespace plugin\workerman\server;
+namespace plugin\__worker\worker;
 
-use plugin\workerman\WorkerApplication;
+use plugin\__worker\provider\Application;
 use think\exception\Handle;
 use Throwable;
 use Workerman\Connection\TcpConnection;
@@ -15,9 +15,9 @@ use Workerman\Worker;
  * @Author: WasonCheung
  * @Description worker for http
  */
-class HttpServer extends BaseServer
+class HttpWorker extends BaseWorker
 {
-    public WorkerApplication $application;
+    public Application $application;
     public string $rootPath;
     public string $moduleName;
     public string $publicPath;
@@ -45,13 +45,13 @@ class HttpServer extends BaseServer
      */
     public function onWorkerStart(Worker $worker): void
     {
-        $this->application = (new WorkerApplication($this->rootPath))->initialize();
+        $this->application = (new Application($this->rootPath))->initialize();
 
-        $this->application->instance(WorkerApplication::class, $this->application);
+        $this->application->instance(Application::class, $this->application);
         $this->application->instance(Worker::class, $worker);
 
         $this->debug = $this->application->isDebug();
-        // 初始化应用
+
         // 设置应用名
         if ($this->moduleName !== 'auto') {
             $this->application->http->name($this->moduleName);
@@ -85,38 +85,28 @@ class HttpServer extends BaseServer
         // 设置sessionId
         $this->application->session->setId($workerRequest->sessionId());
 
+        // 请求处理
+        while (ob_get_level() > 1) {
+            ob_end_clean();
+        }
+        ob_start();
         try {
-            // 请求处理
-            while (ob_get_level() > 1) {
-                ob_end_clean();
-            }
-            ob_start();
-
             // app 运行
             $thinkResponse = $this->application->http->run();
             // 渲染数据
             $thinkResponse->send();
             // 运行结束
             $this->application->http->end($thinkResponse);
-
-            $content = ob_get_clean();
-
-            // workerman 响应对象
-            $workerResponse
-                ->withStatus($thinkResponse->getCode())
-                ->withHeaders($thinkResponse->getHeader())
-                ->withBody($content);
         } catch (Throwable $e) {
             $handler = $this->application->make(Handle::class);
             $handler->report($e);
             $thinkResponse = $handler->render($this->application->request, $e);
-
-            // workerman 响应对象
-            $workerResponse
-                ->withStatus($thinkResponse->getCode())
-                ->withBody($thinkResponse->getContent());
         }
         // 响应内容
+        $workerResponse
+            ->withStatus($thinkResponse->getCode())
+            ->withHeaders($thinkResponse->getHeader())
+            ->withBody(ob_get_clean());
         $connection->send($workerResponse);
     }
 

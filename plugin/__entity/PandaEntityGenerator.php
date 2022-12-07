@@ -6,6 +6,7 @@ namespace plugin\__entity;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use plugin\__entity\lib\Config;
+use plugin\__entity\lib\GeneratorPdoFactory;
 use think\App;
 use think\facade\Config as ThinkConfig;
 

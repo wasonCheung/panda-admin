@@ -51,7 +51,6 @@ abstract class PluginBase
     // 等待更新
     public const STATUS_WAIT4UPDATE = 'wait4update';
 
-
     /**
      * @var string 插件名
      */
@@ -133,18 +132,18 @@ abstract class PluginBase
 
     public function run(): void
     {
-        if (RUNNING_IN_CONSOLE) {
-            $this->runCli();
+        if ($this->app->runningInConsole()) {
+            $this->runningInConsole();
         } else {
-            $this->runCgi();
+            $this->runningInCliServer();
         }
     }
 
-    protected function runCli(): void
+    protected function runningInConsole(): void
     {
     }
 
-    protected function runCgi(): void
+    protected function runningInCliServer(): void
     {
     }
 

@@ -6,7 +6,7 @@ use plugin\__plugin\command\PluginMake;
 
 class Plugin extends PluginBase
 {
-    protected function runCli(): void
+    protected function runningInConsole(): void
     {
         Helper::commands(
             command\Plugin::class,

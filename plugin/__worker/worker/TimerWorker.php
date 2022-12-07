@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\workerman\server;
+namespace plugin\__worker\worker;
 
 use Workerman\Timer;
 use Workerman\Worker;
@@ -10,7 +10,7 @@ use Workerman\Worker;
  * @Author: WasonCheung
  * @Description: 定时器
  */
-abstract class TimerServer extends BaseServer
+abstract class TimerWorker extends BaseWorker
 {
     protected int $timerId;
     protected array $config;

@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\workerman\provider;
+namespace plugin\__worker\provider;
 
 use think\App;
 use think\exception\HttpException;

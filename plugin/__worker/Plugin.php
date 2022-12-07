@@ -1,23 +1,26 @@
 <?php
 
-namespace plugin\workerman;
+namespace plugin\__worker;
 
-use plugin\__plugin\PluginBase;
 use plugin\__plugin\Helper;
-use plugin\workerman\command\Worker;
+use plugin\__plugin\PluginBase;
+use plugin\__worker\command\HttpWorker;
+use plugin\__worker\command\HttpWorkerForWin;
+use plugin\__worker\command\Monitor;
 use think\Cookie;
 use think\Request;
 
 class Plugin extends PluginBase
 {
-    protected function runInCli(): void
+    protected function runningInConsole(): void
     {
         Helper::commands(
-            Worker::class
+            HttpWorker::class,
+            HttpWorkerForWin::class
         );
     }
 
-    protected function runInCgi(): void
+    protected function runningInCliServer(): void
     {
         Helper::bindProviders(
             [

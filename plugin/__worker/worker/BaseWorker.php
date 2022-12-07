@@ -1,19 +1,16 @@
 <?php
 
-namespace plugin\workerman\server;
+namespace plugin\__worker\worker;
 
 use Workerman\Connection\TcpConnection;
 use Workerman\Worker;
-
-use function plugin\__workerman\server\str_starts_with;
-
 
 /**
  * @Data: 2022/11/26
  * @Author: WasonCheung
  * @Description:服务类
  */
-abstract class BaseServer
+abstract class BaseWorker
 {
     protected Worker $worker;
     protected bool $debug = true;

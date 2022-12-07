@@ -51,7 +51,7 @@ class Starter
             }
 
             // debug 打印
-            APP_DEBUG && $log->debug(
+            $this->app->isDebug() && $log->debug(
                 sprintf(
                     '[ %s ] [ %s ] %s 配置已加载',
                     $plugin->type,
@@ -75,7 +75,7 @@ class Starter
              */
             $plugin->run();
 
-            APP_DEBUG && $this->app->log->debug(
+            $this->app->isDebug() && $this->app->log->debug(
                 sprintf(
                     '[ %s ] [ %s ] %s 插件已启动',
                     $plugin->type,

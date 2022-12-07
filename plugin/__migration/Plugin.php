@@ -13,7 +13,7 @@ use think\migration\Creator;
  */
 class Plugin extends PluginBase
 {
-    protected function runCli(): void
+    protected function runningInConsole(): void
     {
         Helper::bindProviders(
             [Creator::class => \plugin\__migration\Creator::class]

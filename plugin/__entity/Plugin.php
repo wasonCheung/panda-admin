@@ -13,7 +13,7 @@ use plugin\__plugin\PluginBase;
  */
 class Plugin extends PluginBase
 {
-    protected function runCli(): void
+    protected function runningInConsole(): void
     {
         Helper::commands(Entity::class);
     }

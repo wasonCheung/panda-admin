@@ -28,16 +28,14 @@ class Lang extends ThinkLang
 
     public function pluginLangLoader(array $plugins, string $langset): void
     {
-        $lang = $this->app->lang;
-        $log = $this->app->log;
         foreach ($plugins as $plugin) {
             /**
              * @var PluginBase $plugin
              */
             $langFiles = glob($plugin->getLangPath() . $langset . '.*');
             if ($langFiles) {
-                $lang->load($langFiles);
-                APP_DEBUG && $log->debug(
+                $this->app->lang->load($langFiles);
+                $this->app->isDebug() && $this->app->log->debug(
                     sprintf(
                         '[ %s ] [ %s ] %s %s语言包已加载',
                         $plugin->type,
