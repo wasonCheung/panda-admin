@@ -4,6 +4,7 @@ namespace plugin\__database;
 
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
+use plugin\__database\entity\command\Entity;
 use plugin\__database\think\command\factory\Create as FactoryCreate;
 use plugin\__database\think\command\migrate\Breakpoint as MigrateBreakpoint;
 use plugin\__database\think\command\migrate\Create as MigrateCreate;
@@ -46,6 +47,7 @@ class Plugin extends PluginBase
             SeedCreate::class,
             SeedRun::class,
             FactoryCreate::class,
+            Entity::class
         );
     }
 }

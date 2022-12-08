@@ -9,11 +9,13 @@
 
 namespace plugin\__database\think\command\migrate;
 
+use plugin\__database\entity\command\Entity;
 use plugin\__database\phinx\migration\MigrationInterface;
 use think\console\Input;
 use think\console\input\Option as InputOption;
 use think\console\Output;
 use plugin\__database\think\command\Migrate;
+use think\facade\Console;
 
 class Run extends Migrate
 {
@@ -60,6 +62,8 @@ EOT
 
         $output->writeln('');
         $output->writeln('<comment>All Done. Took ' . sprintf('%.4fs', $end - $start) . '</comment>');
+        // 生成实体类
+        $output->writeln(Console::call('panda:entity')->fetch());
     }
 
     public function migrateToDateTime(\DateTime $dateTime)

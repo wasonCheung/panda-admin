@@ -1,13 +1,12 @@
 <?php
 
-namespace plugin\__entity\command;
+namespace plugin\__database\entity\command;
 
 use PDO;
-use plugin\__entity\lib\GeneratorPdoFactory;
+use plugin\__database\entity\lib\GeneratorPdoFactory;
 use think\console\Command;
 use think\console\Input;
 use think\console\Output;
-use think\facade\Config;
 use think\facade\Config as ThinkConfig;
 
 /**
@@ -25,9 +24,9 @@ class Entity extends Command
 
     protected function execute(Input $input, Output $output): bool
     {
-        $options = Config::get('__entity');
+        $options = ThinkConfig::get('__database-entity');
         // 创建实体类
-        $config = new \plugin\__entity\lib\Config();
+        $config = new \plugin\__database\entity\lib\Config();
 
         foreach ($options as $optionName => $optionsValue) {
             $config->{$optionName} = $optionsValue;

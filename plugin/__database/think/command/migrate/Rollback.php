@@ -9,11 +9,13 @@
 
 namespace plugin\__database\think\command\migrate;
 
+use plugin\__database\entity\command\Entity;
 use plugin\__database\phinx\migration\MigrationInterface;
-use think\console\input\Option as InputOption;
-use think\console\Input;
-use think\console\Output;
 use plugin\__database\think\command\Migrate;
+use think\console\Input;
+use think\console\input\Option as InputOption;
+use think\console\Output;
+use think\facade\Console;
 
 class Rollback extends Migrate
 {
@@ -23,11 +25,12 @@ class Rollback extends Migrate
     protected function configure()
     {
         $this->setName('panda:migrate-rollback')
-             ->setDescription('Rollback the last or to a specific migration')
-             ->addOption('--target', '-t', InputOption::VALUE_REQUIRED, 'The version number to rollback to')
-             ->addOption('--date', '-d', InputOption::VALUE_REQUIRED, 'The date to rollback to')
-             ->addOption('--force', '-f', InputOption::VALUE_NONE, 'Force rollback to ignore breakpoints')
-             ->setHelp(<<<EOT
+            ->setDescription('Rollback the last or to a specific migration')
+            ->addOption('--target', '-t', InputOption::VALUE_REQUIRED, 'The version number to rollback to')
+            ->addOption('--date', '-d', InputOption::VALUE_REQUIRED, 'The date to rollback to')
+            ->addOption('--force', '-f', InputOption::VALUE_NONE, 'Force rollback to ignore breakpoints')
+            ->setHelp(
+                <<<EOT
 The <info>migrate:rollback</info> command reverts the last migration, or optionally up to a specific version
 
 <info>php think migrate:rollback</info>
@@ -36,21 +39,21 @@ The <info>migrate:rollback</info> command reverts the last migration, or optiona
 <info>php think migrate:rollback -v</info>
 
 EOT
-             );
+            );
     }
 
     /**
      * Rollback the migration.
      *
-     * @param Input  $input
+     * @param Input $input
      * @param Output $output
      * @return void
      */
     protected function execute(Input $input, Output $output)
     {
         $version = $input->getOption('target');
-        $date    = $input->getOption('date');
-        $force   = !!$input->getOption('force');
+        $date = $input->getOption('date');
+        $force = !!$input->getOption('force');
 
         // rollback the specified environment
         $start = microtime(true);
@@ -63,13 +66,41 @@ EOT
 
         $output->writeln('');
         $output->writeln('<comment>All Done. Took ' . sprintf('%.4fs', $end - $start) . '</comment>');
+        // 生成实体类
+        $output->writeln(Console::call('panda:entity')->fetch());
+    }
+
+    protected function rollbackToDateTime(\DateTime $dateTime, $force = false)
+    {
+        $versions = $this->getVersions();
+        $dateString = $dateTime->format('YmdHis');
+        sort($versions);
+
+        $earlierVersion = null;
+        $availableMigrations = array_filter($versions, function ($version) use ($dateString, &$earlierVersion) {
+            if ($version <= $dateString) {
+                $earlierVersion = $version;
+            }
+            return $version >= $dateString;
+        });
+
+        if (count($availableMigrations) > 0) {
+            if (is_null($earlierVersion)) {
+                $this->output->writeln('Rolling back all migrations');
+                $migration = 0;
+            } else {
+                $this->output->writeln('Rolling back to version ' . $earlierVersion);
+                $migration = $earlierVersion;
+            }
+            $this->rollback($migration, $force);
+        }
     }
 
     protected function rollback($version = null, $force = false)
     {
         $migrations = $this->getMigrations();
         $versionLog = $this->getVersionLog();
-        $versions   = array_keys($versionLog);
+        $versions = array_keys($versionLog);
 
         ksort($migrations);
         sort($versions);
@@ -83,7 +114,7 @@ EOT
         // If no target version was supplied, revert the last migration
         if (null === $version) {
             // Get the migration before the last run migration
-            $prev    = count($versions) - 2;
+            $prev = count($versions) - 2;
             $version = $prev < 0 ? 0 : $versions[$prev];
         } else {
             // Get the first migration number
@@ -109,38 +140,13 @@ EOT
             }
 
             if (in_array($migration->getVersion(), $versions)) {
-                if (isset($versionLog[$migration->getVersion()]) && 0 != $versionLog[$migration->getVersion()]['breakpoint'] && !$force) {
+                if (isset($versionLog[$migration->getVersion()]) && 0 != $versionLog[$migration->getVersion(
+                    )]['breakpoint'] && !$force) {
                     $this->output->writeln('<error>Breakpoint reached. Further rollbacks inhibited.</error>');
                     break;
                 }
                 $this->executeMigration($migration, MigrationInterface::DOWN);
             }
-        }
-    }
-
-    protected function rollbackToDateTime(\DateTime $dateTime, $force = false)
-    {
-        $versions   = $this->getVersions();
-        $dateString = $dateTime->format('YmdHis');
-        sort($versions);
-
-        $earlierVersion      = null;
-        $availableMigrations = array_filter($versions, function ($version) use ($dateString, &$earlierVersion) {
-            if ($version <= $dateString) {
-                $earlierVersion = $version;
-            }
-            return $version >= $dateString;
-        });
-
-        if (count($availableMigrations) > 0) {
-            if (is_null($earlierVersion)) {
-                $this->output->writeln('Rolling back all migrations');
-                $migration = 0;
-            } else {
-                $this->output->writeln('Rolling back to version ' . $earlierVersion);
-                $migration = $earlierVersion;
-            }
-            $this->rollback($migration, $force);
         }
     }
 }
