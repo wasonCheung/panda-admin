@@ -25,13 +25,10 @@
     "topthink/think-orm": "^2.0",
     "topthink/think-filesystem": "^1.0",
     "topthink/think-captcha": "^3.0",
-    "topthink/think-migration": "^3.0",
     "liliuwei/thinkphp-jump": "^1.5",
     "topthink/think-multi-app": "^1.0",
     "ext-pdo": "*",
-    "workerman/workerman": "^4.1",
-    "ext-posix": "*",
-    "ext-pcntl": "*"
+    "workerman/workerman": "^4.1"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.2",
@@ -41,13 +38,12 @@
     "nette/php-generator": "^3.0",
     "doctrine/inflector": "^2.0",
     "phpunit/phpunit": "9.5.21",
-    "fakerphp/faker": "^1.20"
+    "fzaninotto/faker": "^1.5"
   },
   "autoload": {
     "psr-4": {
       "app\\": "app",
       "plugin\\": "plugin",
-      "panda\\": "panda",
       "": "extend"
     }
   },

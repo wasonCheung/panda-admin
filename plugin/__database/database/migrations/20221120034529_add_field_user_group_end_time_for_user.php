@@ -1,8 +1,9 @@
 <?php
 
-use think\migration\Migrator;
 
-class AdminLogCreate extends Migrator
+use plugin\__database\think\Migrator;
+
+class AddFieldUserGroupEndTimeForUser extends Migrator
 {
     public function up()
     {

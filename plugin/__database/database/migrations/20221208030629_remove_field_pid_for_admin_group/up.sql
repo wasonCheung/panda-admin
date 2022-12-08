@@ -1,0 +1,1 @@
+ALTER TABLE `{prefix}admin_group` DROP `pid`;

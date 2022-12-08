@@ -1,7 +1,10 @@
 <?php
 
-use database\entity\AdminEntity;
-use think\migration\Seeder;
+namespace plugin\__database\database\seeds;
+
+use app\entity\AdminEntity;
+use Faker;
+use plugin\__database\think\Seeder;
 
 class Admin extends Seeder
 {
@@ -15,6 +18,9 @@ class Admin extends Seeder
      */
     public function run()
     {
+        // 设置超级管理员
+
+
         $faker = Faker\Factory::create('zh_CN');//选择中文库
         $data = [];
         for ($i = 0; $i < 5; $i++) {
@@ -33,4 +39,6 @@ class Admin extends Seeder
 
         $this->table('admin')->insert($data)->save();
     }
+
+
 }

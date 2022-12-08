@@ -1,8 +1,9 @@
 <?php
 
-use think\migration\Migrator;
 
-class RuleCreate extends Migrator
+use plugin\__database\think\Migrator;
+
+class UserGroupCreate extends Migrator
 {
     public function up()
     {

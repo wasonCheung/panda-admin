@@ -1,7 +1,6 @@
 <?php
 
-use think\migration\Migrator;
-
+use plugin\__database\think\Migrator;
 class UserCreate extends Migrator
 {
     public function up()

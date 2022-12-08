@@ -1,8 +1,10 @@
 <?php
 
-use think\migration\Migrator;
 
-class AdminGroupCreate extends Migrator
+
+use plugin\__database\think\Migrator;
+
+class AdminLogCreate extends Migrator
 {
     public function up()
     {

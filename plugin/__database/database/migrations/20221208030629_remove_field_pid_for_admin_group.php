@@ -1,8 +1,9 @@
 <?php
 
-use think\migration\Migrator;
 
-class AddFieldUserGroupEndTimeForUser extends Migrator
+use plugin\__database\think\Migrator;
+
+class RemoveFieldPidForAdminGroup extends Migrator
 {
     public function up()
     {
