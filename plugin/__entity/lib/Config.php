@@ -96,7 +96,6 @@ class Config
     public bool $construct = true;
 
     public bool $serialize = true;
-    public bool $toAarray = true;
 
     /**
      * @param array<string, mixed> $config

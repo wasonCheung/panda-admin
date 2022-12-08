@@ -15,7 +15,7 @@ use Nette\Utils\Strings;
 use ReflectionMethod;
 use RuntimeException;
 
-class Generator
+class __Generator
 {
     use SmartObject;
 
@@ -92,7 +92,7 @@ class Generator
         }
 
         if ($this->config->tableConstant !== null) {
-           // $entity->addConstant($this->config->tableConstant, $table)->setVisibility('public');
+            $entity->addConstant($this->config->tableConstant, $table)->setVisibility('public');
         }
 
         if ($this->config->extends !== null) {
@@ -113,7 +113,7 @@ class Generator
 
             $entity->addMethod('toArray')->setReturnType('array')
                 ->addBody('if (!$filtration){ return $this->fields; }')
-                ->addBody('return array_filter($this->fields, function ($item){ return $item !== null;});')
+                ->addBody('return array_filter($this->fields,static function ($item){ return $item !== null;});')
             ->addParameter('filtration')->setType('bool')->setDefaultValue(false);
 
             $entity->addMethod('setArray')
@@ -131,14 +131,14 @@ class Generator
                 ->addBody('return $this;')
                 ->setReturnType('self');
 
-            $setExtra = $entity->addMethod('__setExtra');
+            $setExtra = $entity->addMethod('setExtra');
             $setExtra  ->addBody('$this->extra[$name] = $value;')
                 ->addBody('return $this;')
                 ->setReturnType('self');
               $setExtra  ->addParameter('name')->setType('string');
                $setExtra ->addParameter('value');
 
-            $getExtra = $entity->addMethod('__getExtra');
+            $getExtra = $entity->addMethod('getExtra');
 
             $getExtra
                 ->addBody('if ($name === null) { return $this->extra; }')
@@ -161,16 +161,21 @@ class Generator
                 ->addBody('$this->setArray($fields);')->setReturnType('void')->addParameter('fields')->setType('array');
         }
 
-    /*    $entity->addMethod('__get')->setReturnType('mixed')
-            ->addBody('return $this->fields[$name] ?? null;')
+        $entity->addMethod('__get')->setReturnType('mixed')
+            ->addBody('if (\array_key_exists($name, $this->fields)) {')
+            ->addBody('   return $this->fields[$name];')
+            ->addBody('}')
+            ->addBody('return $this->extra[$name] ?? null;')
             ->addParameter('name')->setType('string');
 
         $__set = $entity->addMethod('__set')->setReturnType('void')
             ->addBody('if (\array_key_exists($name, $this->fields)) {')
             ->addBody('   $this->fields[$name] = $value;')
+            ->addBody('} else {')
+            ->addBody('   $this->extra[$name] = $value;')
             ->addBody('}');
         $__set->addParameter('name')->setType('string');
-        $__set->addParameter('value')->setType('mixed');*/
+        $__set->addParameter('value')->setType('mixed');
 
 
         foreach ($columns as $column) {
@@ -190,8 +195,8 @@ class Generator
         }
 
         if (isset($propertiesByArray)) {
-            $entity->addProperty('fields', $propertiesByArray)->setType('array')->setVisibility('private');
-            $entity->addProperty('extra', [])->setType('array')->setVisibility('private');
+            $entity->addProperty('fields', $propertiesByArray)->setType('array')->setVisibility('protected');
+            $entity->addProperty('extra', [])->setType('array')->setVisibility('protected');
         }
 
         if ($this->config->generateMapping) {

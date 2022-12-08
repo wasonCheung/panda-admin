@@ -4,16 +4,8 @@ declare(strict_types=1);
 
 namespace app\entity;
 
-/**
- * @property mixed $version
- * @property mixed $migration_name
- * @property mixed $start_time
- * @property mixed $end_time
- * @property mixed $breakpoint
- */
 class MigrationEntity
 {
-    public const TABLE_NAME = 'panda_migrations';
     public const PRIMARY_KEY = 'version';
     public const VERSION = 'version';
     public const MIGRATION_NAME = 'migration_name';
@@ -21,7 +13,7 @@ class MigrationEntity
     public const END_TIME = 'end_time';
     public const BREAKPOINT = 'breakpoint';
 
-    protected array $fields = [
+    private array $fields = [
         'version' => null,
         'migration_name' => null,
         'start_time' => null,
@@ -29,7 +21,7 @@ class MigrationEntity
         'breakpoint' => null,
     ];
 
-    protected array $extra = [];
+    private array $extra = [];
 
     public function __construct(array $fields = [])
     {
@@ -39,7 +31,7 @@ class MigrationEntity
     public function toArray(bool $filtration = false): array
     {
         if (!$filtration){ return $this->fields; }
-        return array_filter($this->fields,static function ($item){ return $item !== null;});
+        return array_filter($this->fields, function ($item){ return $item !== null;});
     }
 
     public function setArray(array $fields): self
@@ -59,13 +51,13 @@ class MigrationEntity
         return $this;
     }
 
-    public function setExtra(string $name, $value): self
+    public function __setExtra(string $name, $value): self
     {
         $this->extra[$name] = $value;
         return $this;
     }
 
-    public function getExtra(string|null $name = null, mixed $default = null): mixed
+    public function __getExtra(string|null $name = null, mixed $default = null): mixed
     {
         if ($name === null) { return $this->extra; }
         return $this->extra[$name] ?? $default;
@@ -84,23 +76,6 @@ class MigrationEntity
     public function __unserialize(array $fields): void
     {
         $this->setArray($fields);
-    }
-
-    public function __get(string $name): mixed
-    {
-        if (\array_key_exists($name, $this->fields)) {
-           return $this->fields[$name];
-        }
-        return $this->extra[$name] ?? null;
-    }
-
-    public function __set(string $name, mixed $value): void
-    {
-        if (\array_key_exists($name, $this->fields)) {
-           $this->fields[$name] = $value;
-        } else {
-           $this->extra[$name] = $value;
-        }
     }
 
     public function getVersion(): mixed

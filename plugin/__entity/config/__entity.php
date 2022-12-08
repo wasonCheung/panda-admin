@@ -13,7 +13,7 @@ return [
     'rewrite' => true,
     'addDeclareStrictTypes' => true,
     'addPropertyVarComment' => false,
-    'generatePhpDocProperties' => true,
+    'generatePhpDocProperties' => false,
     'suffix' => 'Entity',
     'generatePropertiesByArray' => true,
     'replacements' => [

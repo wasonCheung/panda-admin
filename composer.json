@@ -38,7 +38,8 @@
     "nette/utils": "^3.0",
     "nette/php-generator": "^3.0",
     "doctrine/inflector": "^2.0",
-    "phpunit/phpunit": "9.5.21"
+    "phpunit/phpunit": "9.5.21",
+    "fzaninotto/faker": "^1.5"
   },
   "autoload": {
     "psr-4": {

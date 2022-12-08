@@ -4,17 +4,8 @@ declare(strict_types=1);
 
 namespace app\entity;
 
-/**
- * @property mixed $id 主键
- * @property mixed $name 组名
- * @property mixed $status 状态:0=禁用,1=启用
- * @property mixed $rules 权限规则ID
- * @property mixed $create_time 创建时间
- * @property mixed $update_time 更新时间
- */
 class AdminGroupEntity
 {
-    public const TABLE_NAME = 'panda_admin_group';
     public const PRIMARY_KEY = 'id';
     public const ID = 'id';
     public const NAME = 'name';
@@ -23,7 +14,7 @@ class AdminGroupEntity
     public const CREATE_TIME = 'create_time';
     public const UPDATE_TIME = 'update_time';
 
-    protected array $fields = [
+    private array $fields = [
         'id' => null,
         'name' => null,
         'status' => null,
@@ -32,7 +23,7 @@ class AdminGroupEntity
         'update_time' => null,
     ];
 
-    protected array $extra = [];
+    private array $extra = [];
 
     public function __construct(array $fields = [])
     {
@@ -42,7 +33,7 @@ class AdminGroupEntity
     public function toArray(bool $filtration = false): array
     {
         if (!$filtration){ return $this->fields; }
-        return array_filter($this->fields,static function ($item){ return $item !== null;});
+        return array_filter($this->fields, function ($item){ return $item !== null;});
     }
 
     public function setArray(array $fields): self
@@ -62,13 +53,13 @@ class AdminGroupEntity
         return $this;
     }
 
-    public function setExtra(string $name, $value): self
+    public function __setExtra(string $name, $value): self
     {
         $this->extra[$name] = $value;
         return $this;
     }
 
-    public function getExtra(string|null $name = null, mixed $default = null): mixed
+    public function __getExtra(string|null $name = null, mixed $default = null): mixed
     {
         if ($name === null) { return $this->extra; }
         return $this->extra[$name] ?? $default;
@@ -87,23 +78,6 @@ class AdminGroupEntity
     public function __unserialize(array $fields): void
     {
         $this->setArray($fields);
-    }
-
-    public function __get(string $name): mixed
-    {
-        if (\array_key_exists($name, $this->fields)) {
-           return $this->fields[$name];
-        }
-        return $this->extra[$name] ?? null;
-    }
-
-    public function __set(string $name, mixed $value): void
-    {
-        if (\array_key_exists($name, $this->fields)) {
-           $this->fields[$name] = $value;
-        } else {
-           $this->extra[$name] = $value;
-        }
     }
 
     public function getId(): mixed

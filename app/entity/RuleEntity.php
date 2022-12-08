@@ -4,27 +4,8 @@ declare(strict_types=1);
 
 namespace app\entity;
 
-/**
- * @property mixed $id ID
- * @property mixed $pid 权限归属
- * @property mixed $status 状态:0=禁用,1=启用
- * @property mixed $type 类型:1=menu_dir=菜单目录,2=menu=菜单项,3=button=页面按钮
- * @property mixed $title 规则标题
- * @property mixed $name 规则名称(全英文小写)
- * @property mixed $path 路由路径
- * @property mixed $icon 图标
- * @property mixed $menu_type 菜单类型:tab=选项卡,link=链接,iframe=Iframe
- * @property mixed $url Url
- * @property mixed $component vue组件路径
- * @property mixed $keepalive 缓存:0=关闭,1=开启
- * @property mixed $ps 备注
- * @property mixed $sort 排序
- * @property mixed $create_time 创建时间
- * @property mixed $update_time 更新时间
- */
 class RuleEntity
 {
-    public const TABLE_NAME = 'panda_rule';
     public const PRIMARY_KEY = 'id';
     public const ID = 'id';
     public const PID = 'pid';
@@ -43,7 +24,7 @@ class RuleEntity
     public const CREATE_TIME = 'create_time';
     public const UPDATE_TIME = 'update_time';
 
-    protected array $fields = [
+    private array $fields = [
         'id' => null,
         'pid' => null,
         'status' => null,
@@ -62,7 +43,7 @@ class RuleEntity
         'update_time' => null,
     ];
 
-    protected array $extra = [];
+    private array $extra = [];
 
     public function __construct(array $fields = [])
     {
@@ -72,7 +53,7 @@ class RuleEntity
     public function toArray(bool $filtration = false): array
     {
         if (!$filtration){ return $this->fields; }
-        return array_filter($this->fields,static function ($item){ return $item !== null;});
+        return array_filter($this->fields, function ($item){ return $item !== null;});
     }
 
     public function setArray(array $fields): self
@@ -92,13 +73,13 @@ class RuleEntity
         return $this;
     }
 
-    public function setExtra(string $name, $value): self
+    public function __setExtra(string $name, $value): self
     {
         $this->extra[$name] = $value;
         return $this;
     }
 
-    public function getExtra(string|null $name = null, mixed $default = null): mixed
+    public function __getExtra(string|null $name = null, mixed $default = null): mixed
     {
         if ($name === null) { return $this->extra; }
         return $this->extra[$name] ?? $default;
@@ -117,23 +98,6 @@ class RuleEntity
     public function __unserialize(array $fields): void
     {
         $this->setArray($fields);
-    }
-
-    public function __get(string $name): mixed
-    {
-        if (\array_key_exists($name, $this->fields)) {
-           return $this->fields[$name];
-        }
-        return $this->extra[$name] ?? null;
-    }
-
-    public function __set(string $name, mixed $value): void
-    {
-        if (\array_key_exists($name, $this->fields)) {
-           $this->fields[$name] = $value;
-        } else {
-           $this->extra[$name] = $value;
-        }
     }
 
     public function getId(): mixed

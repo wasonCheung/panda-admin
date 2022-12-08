@@ -4,21 +4,8 @@ declare(strict_types=1);
 
 namespace app\entity;
 
-/**
- * @property mixed $id 用户组id
- * @property mixed $status 状态:0=禁用,1=启用
- * @property mixed $name 用户组名
- * @property mixed $rules 权限规则ID
- * @property mixed $coins_for_day 包日硬币数量
- * @property mixed $coins_for_month 包月硬币数量
- * @property mixed $coins_for_year 包年硬币数量
- * @property mixed $coins_for_infinite 无限日期硬币数量
- * @property mixed $create_time 创建时间
- * @property mixed $update_time 更新时间
- */
 class UserGroupEntity
 {
-    public const TABLE_NAME = 'panda_user_group';
     public const PRIMARY_KEY = 'id';
     public const ID = 'id';
     public const STATUS = 'status';
@@ -31,7 +18,7 @@ class UserGroupEntity
     public const CREATE_TIME = 'create_time';
     public const UPDATE_TIME = 'update_time';
 
-    protected array $fields = [
+    private array $fields = [
         'id' => null,
         'status' => null,
         'name' => null,
@@ -44,7 +31,7 @@ class UserGroupEntity
         'update_time' => null,
     ];
 
-    protected array $extra = [];
+    private array $extra = [];
 
     public function __construct(array $fields = [])
     {
@@ -54,7 +41,7 @@ class UserGroupEntity
     public function toArray(bool $filtration = false): array
     {
         if (!$filtration){ return $this->fields; }
-        return array_filter($this->fields,static function ($item){ return $item !== null;});
+        return array_filter($this->fields, function ($item){ return $item !== null;});
     }
 
     public function setArray(array $fields): self
@@ -74,13 +61,13 @@ class UserGroupEntity
         return $this;
     }
 
-    public function setExtra(string $name, $value): self
+    public function __setExtra(string $name, $value): self
     {
         $this->extra[$name] = $value;
         return $this;
     }
 
-    public function getExtra(string|null $name = null, mixed $default = null): mixed
+    public function __getExtra(string|null $name = null, mixed $default = null): mixed
     {
         if ($name === null) { return $this->extra; }
         return $this->extra[$name] ?? $default;
@@ -99,23 +86,6 @@ class UserGroupEntity
     public function __unserialize(array $fields): void
     {
         $this->setArray($fields);
-    }
-
-    public function __get(string $name): mixed
-    {
-        if (\array_key_exists($name, $this->fields)) {
-           return $this->fields[$name];
-        }
-        return $this->extra[$name] ?? null;
-    }
-
-    public function __set(string $name, mixed $value): void
-    {
-        if (\array_key_exists($name, $this->fields)) {
-           $this->fields[$name] = $value;
-        } else {
-           $this->extra[$name] = $value;
-        }
     }
 
     public function getId(): mixed
