@@ -28,7 +28,8 @@
     "liliuwei/thinkphp-jump": "^1.5",
     "topthink/think-multi-app": "^1.0",
     "ext-pdo": "*",
-    "workerman/workerman": "^4.1"
+    "workerman/workerman": "^4.1",
+    "topthink/think-migration": "^3.0"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.2",
@@ -37,8 +38,7 @@
     "nette/utils": "^3.0",
     "nette/php-generator": "^3.0",
     "doctrine/inflector": "^2.0",
-    "phpunit/phpunit": "9.5.21",
-    "fzaninotto/faker": "^1.5"
+    "phpunit/phpunit": "9.5.21"
   },
   "autoload": {
     "psr-4": {
