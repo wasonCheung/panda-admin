@@ -27,7 +27,6 @@ class Generator
 
     public function __construct(IRepository $repository, Config $config)
     {
-
         $this->repository = $repository;
         $this->config = $config;
         $this->inflector = InflectorFactory::create()->build();
@@ -92,7 +91,7 @@ class Generator
         }
 
         if ($this->config->tableConstant !== null) {
-           // $entity->addConstant($this->config->tableConstant, $table)->setVisibility('public');
+            // $entity->addConstant($this->config->tableConstant, $table)->setVisibility('public');
         }
 
         if ($this->config->extends !== null) {
@@ -102,96 +101,104 @@ class Generator
         $columns = $this->repository->getTableColumns($table);
         $mapping = [];
 
-        if ($this->config->construct) {
-            $entity->addMethod('__construct')
-                ->addBody('$this->setArray($fields);')
-                ->addParameter('fields', [])->setType('array');
-        }
+        if (!$this->config->extends) {
+            if ($this->config->construct) {
+                $entity->addMethod('__construct')
+                    ->addBody('$this->setArray($fields);')
+                    ->addParameter('fields', [])->setType('array');
+            }
 
-        if ($this->config->generatePropertiesByArray) {
-            $propertiesByArray = [];
+            if ($this->config->generatePropertiesByArray) {
+                $propertiesByArray = [];
 
-            $entity->addMethod('toArray')->setReturnType('array')
-                ->addBody('if (!$filtration){ return $this->fields; }')
-                ->addBody('return array_filter($this->fields, function ($item){ return $item !== null;});')
-            ->addParameter('filtration')->setType('bool')->setDefaultValue(false);
+                $entity->addMethod('toArray')->setReturnType('array')
+                    ->addBody('if (!$filtration){ return $this->fields; }')
+                    ->addBody('return array_filter($this->fields, function ($item){ return $item !== null;});')
+                    ->addParameter('filtration')->setType('bool')->setDefaultValue(false);
 
-            $entity->addMethod('setArray')
-                ->addBody('if (empty($fields)){ return $this; }')
-                ->addBody('foreach ($this->fields as $key => $value) {')
-                ->addBody('   $this->fields[$key] = $fields[$key] ?? null;')
-                ->addBody('}')
-                ->addBody('return $this;')
-                ->setReturnType('self')
-                ->addParameter('fields')->setType('array');
-            $entity->addMethod('restArray')
-                ->addBody('foreach ($this->fields as $key => $value) {')
-                ->addBody('   $this->fields[$key] = null;')
-                ->addBody('}')
-                ->addBody('return $this;')
-                ->setReturnType('self');
+                $entity->addMethod('setArray')
+                    ->addBody('if (empty($fields)){ return $this; }')
+                    ->addBody('foreach ($this->fields as $key => $value) {')
+                    ->addBody('   $this->fields[$key] = $fields[$key] ?? null;')
+                    ->addBody('}')
+                    ->addBody('return $this;')
+                    ->setReturnType('self')
+                    ->addParameter('fields')->setType('array');
+                $entity->addMethod('restArray')
+                    ->addBody('foreach ($this->fields as $key => $value) {')
+                    ->addBody('   $this->fields[$key] = null;')
+                    ->addBody('}')
+                    ->addBody('return $this;')
+                    ->setReturnType('self');
 
-            $setExtra = $entity->addMethod('__setExtra');
-            $setExtra  ->addBody('$this->extra[$name] = $value;')
-                ->addBody('return $this;')
-                ->setReturnType('self');
-              $setExtra  ->addParameter('name')->setType('string');
-               $setExtra ->addParameter('value');
+                $setExtra = $entity->addMethod('__setExtra');
+                $setExtra->addBody('$this->extra[$name] = $value;')
+                    ->addBody('return $this;')
+                    ->setReturnType('self');
+                $setExtra->addParameter('name')->setType('string');
+                $setExtra->addParameter('value');
 
-            $getExtra = $entity->addMethod('__getExtra');
+                $getExtra = $entity->addMethod('__getExtra');
 
-            $getExtra
-                ->addBody('if ($name === null) { return $this->extra; }')
-                ->addBody('return $this->extra[$name] ?? $default; ')
-
-                ->setReturnType('mixed');
+                $getExtra
+                    ->addBody('if ($name === null) { return $this->extra; }')
+                    ->addBody('return $this->extra[$name] ?? $default; ')
+                    ->setReturnType('mixed');
                 $getExtra->addParameter('name')->setType('string|null')->setDefaultValue(null);
-               $getExtra ->addParameter('default')->setType('mixed')->setDefaultValue(null);
+                $getExtra->addParameter('default')->setType('mixed')->setDefaultValue(null);
+            }
+
+            if ($this->config->tostring) {
+                $entity->addMethod('__toString')
+                    ->addBody(
+                        'return json_encode($this->toArray(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE );'
+                    )->setReturnType('string');
+            }
+
+            if ($this->config->serialize) {
+                $entity->addMethod('__serialize')
+                    ->addBody('return $this->toArray(true);')->setReturnType('array');
+                $entity->addMethod('__unserialize')
+                    ->addBody('$this->setArray($fields);')->setReturnType('void')->addParameter('fields')->setType(
+                        'array'
+                    );
+            }
         }
 
-        if ($this->config->tostring) {
-            $entity->addMethod('__toString')
-                ->addBody('return json_encode($this->toArray(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE );')->setReturnType('string');
-        }
+        /*    $entity->addMethod('__get')->setReturnType('mixed')
+                ->addBody('return $this->fields[$name] ?? null;')
+                ->addParameter('name')->setType('string');
 
-        if ($this->config->serialize) {
-            $entity->addMethod('__serialize')
-                ->addBody('return $this->toArray(true);')->setReturnType('array');
-            $entity->addMethod('__unserialize')
-                ->addBody('$this->setArray($fields);')->setReturnType('void')->addParameter('fields')->setType('array');
-        }
-
-    /*    $entity->addMethod('__get')->setReturnType('mixed')
-            ->addBody('return $this->fields[$name] ?? null;')
-            ->addParameter('name')->setType('string');
-
-        $__set = $entity->addMethod('__set')->setReturnType('void')
-            ->addBody('if (\array_key_exists($name, $this->fields)) {')
-            ->addBody('   $this->fields[$name] = $value;')
-            ->addBody('}');
-        $__set->addParameter('name')->setType('string');
-        $__set->addParameter('value')->setType('mixed');*/
+            $__set = $entity->addMethod('__set')->setReturnType('void')
+                ->addBody('if (\array_key_exists($name, $this->fields)) {')
+                ->addBody('   $this->fields[$name] = $value;')
+                ->addBody('}');
+            $__set->addParameter('name')->setType('string');
+            $__set->addParameter('value')->setType('mixed');*/
 
 
         foreach ($columns as $column) {
             $this->validateColumnName($table, $column);
             $this->generateColumnConstant($entity, $column);
 
-            if (isset($entity->properties[$column->getField()]) || in_array($column->getField(), $phpDocProperties, true)) {
+            if (
+                isset($entity->properties[$column->getField()]) || \in_array(
+                    $column->getField(),
+                    $phpDocProperties,
+                    true
+                )
+            ) {
                 continue;
             }
 
-            if (isset($propertiesByArray)) {
-                $propertiesByArray[$column->getField()] = null;
-            }
+            $propertiesByArray[$column->getField()] = null;
 
             $mapping[$column->getField()] = $this->inflector->classify($column->getField());
             $this->generateColumn($entity, $column);
         }
 
         if (isset($propertiesByArray)) {
-            $entity->addProperty('fields', $propertiesByArray)->setType('array')->setVisibility('private');
-            $entity->addProperty('extra', [])->setType('array')->setVisibility('private');
+            $entity->addProperty('fields', $propertiesByArray)->setType('array')->setVisibility('protected');
         }
 
         if ($this->config->generateMapping) {
@@ -212,95 +219,6 @@ class Generator
     protected function getClassName(string $table): string
     {
         return $this->config->prefix . Helper::camelize($table, $this->config->replacements) . $this->config->suffix;
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function validateColumnName(string $table, Column $column): void
-    {
-        if (Strings::contains($column->getField(), '(')) {
-            throw new Exception('Bad naming for ' . $column->getField() . ' in table ' . $table .
-                ', please change name in database or use AS in views');
-        }
-    }
-
-    protected function generateColumn(ClassType $entity, Column $column): void
-    {
-        $type = $this->getColumnType($column);
-
-        if ($this->config->generateProperties) {
-            $property = $entity->addProperty($column->getField())
-                ->setVisibility($this->config->propertyVisibility);
-
-            // 增加数据库字段备注
-            $property->addComment($column->getComment());
-            if ($this->config->strictlyTypedProperties) {
-                    $property->setType($type);
-                    $property->setNullable()->setValue(null);
-            }
-        }
-
-        if ($this->config->generatePhpDocProperties) {
-            $entity->addComment($this->config->phpDocProperty . ' mixed'  . ' $' . $column->getField() . ' ' . $column->getComment());
-        }
-
-        if ($this->config->generateGetters) {
-            $getter = $entity->addMethod('get' . $this->inflector->classify($column->getField()));
-            $getter->setVisibility($this->config->getterVisibility)
-                ->addBody(str_replace('__FIELD__', $column->getField(), $this->config->getterBody))
-                ->setReturnType('mixed');
-        }
-
-        if ($this->config->generateSetters) {
-            $setter = $entity->addMethod('set' . $this->inflector->classify($column->getField()));
-            $setter->setVisibility($this->config->setterVisibility);
-            $setter->addParameter('value')->setType($type === 'string' ? 'mixed' : $type);
-            $setter->addBody(str_replace('__FIELD__', $column->getField(), $this->config->setterBody));
-            $setter->setReturnType('self');
-            $setter->addComment('@param ' . ($type === 'string' ? 'mixed' : $type) . ' $value ' . $column->getComment());
-            $setter->addComment('@return self');
-        }
-    }
-
-    protected function getColumnType(Column $column): string
-    {
-        $dbColumnType = $column->getType();
-
-        if (Strings::contains($dbColumnType, '(')) {
-            $dbColumnType = Strings::lower(Strings::before($dbColumnType, '(') ?? 'string');
-        }
-
-        /** @var array<string, string> $typeMapping */
-        $typeMapping = Helper::multiArrayFlip($this->config->typeMapping);
-
-        if (isset($typeMapping[$dbColumnType])) {
-            return $typeMapping[$dbColumnType];
-        }
-
-        return 'string';
-    }
-
-    protected function generateColumnConstant(ClassType $entity, Column $column): void
-    {
-        if ($this->config->primaryKeyConstant !== null && $column->isPrimary()) {
-            $entity->addConstant($this->config->primaryKeyConstant, $column->getField())
-                ->setVisibility('public');
-        }
-
-        if ($this->config->generateColumnConstant) {
-            $columnConstant = $this->config->prefix . Strings::upper($this->inflector->tableize($column->getField()));
-
-            if ($columnConstant === 'CLASS') {
-                $columnConstant = '_CLASS';
-            }
-
-            $constants = $entity->getConstants();
-
-            if (!isset($constants[$column->getField()])) {
-                $entity->addConstant($columnConstant, $column->getField())->setVisibility('public');
-            }
-        }
     }
 
     private function cloneEntityFromExistingEntity(ClassType $entity, ClassType $from): void
@@ -340,5 +258,103 @@ class Generator
         }
 
         return $body;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function validateColumnName(string $table, Column $column): void
+    {
+        if (Strings::contains($column->getField(), '(')) {
+            throw new Exception(
+                'Bad naming for ' . $column->getField() . ' in table ' . $table .
+                ', please change name in database or use AS in views'
+            );
+        }
+    }
+
+    protected function generateColumnConstant(ClassType $entity, Column $column): void
+    {
+        if ($this->config->primaryKeyConstant !== null && $column->isPrimary()) {
+            $entity->addConstant($this->config->primaryKeyConstant, $column->getField())
+               ->addComment(
+                   $column->getComment()
+               )
+                ->setVisibility('public');
+        }
+
+        if ($this->config->generateColumnConstant) {
+            $columnConstant = $this->config->prefix . Strings::upper($this->inflector->tableize($column->getField()));
+
+            if ($columnConstant === 'CLASS') {
+                $columnConstant = '_CLASS';
+            }
+
+            $constants = $entity->getConstants();
+
+            if (!isset($constants[$column->getField()])) {
+                $entity->addConstant($columnConstant, $column->getField())
+                    ->setComment(
+                        $column->getComment()
+                    )
+                    ->setVisibility('public');
+            }
+        }
+    }
+
+    protected function generateColumn(ClassType $entity, Column $column): void
+    {
+        $type = $this->getColumnType($column);
+
+        if ($this->config->generateProperties) {
+            $property = $entity->addProperty($column->getField())
+                ->setVisibility($this->config->propertyVisibility);
+
+            // 增加数据库字段备注
+            $property->addComment($column->getComment());
+            if ($this->config->strictlyTypedProperties) {
+                $property->setType($type);
+                $property->setNullable()->setValue(null);
+            }
+        }
+
+        if ($this->config->generatePhpDocProperties) {
+            $entity->addComment(
+                $this->config->phpDocProperty . ' mixed' . ' $' . $column->getField() . ' ' . $column->getComment()
+            );
+        }
+
+        if ($this->config->generateGetters) {
+            $getter = $entity->addMethod('get' . $this->inflector->classify($column->getField()));
+            $getter->setVisibility($this->config->getterVisibility)
+                ->addBody(str_replace('__FIELD__', $column->getField(), $this->config->getterBody))
+                ->setReturnType('mixed');
+        }
+
+        if ($this->config->generateSetters) {
+            $setter = $entity->addMethod('set' . $this->inflector->classify($column->getField()));
+            $setter->setVisibility($this->config->setterVisibility);
+            $setter->addParameter('value')->setType($type === 'string' ? 'mixed' : $type);
+            $setter->addBody(str_replace('__FIELD__', $column->getField(), $this->config->setterBody));
+            $setter->setReturnType('self');
+        }
+    }
+
+    protected function getColumnType(Column $column): string
+    {
+        $dbColumnType = $column->getType();
+
+        if (Strings::contains($dbColumnType, '(')) {
+            $dbColumnType = Strings::lower(Strings::before($dbColumnType, '(') ?? 'string');
+        }
+
+        /** @var array<string, string> $typeMapping */
+        $typeMapping = Helper::multiArrayFlip($this->config->typeMapping);
+
+        if (isset($typeMapping[$dbColumnType])) {
+            return $typeMapping[$dbColumnType];
+        }
+
+        return 'string';
     }
 }

@@ -52,7 +52,7 @@ class Config
 
     public bool $addDeclareStrictTypes = false;
 
-    public ?string $extends = Entity::class;
+    public ?string $extends = '';
 
     public bool $generateGetters = true;
 

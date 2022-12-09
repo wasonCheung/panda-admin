@@ -1,6 +1,7 @@
 <?php
 
-use plugin\__panda\PandaStarter;
+
+use plugin\__kernel\PandaStarter;
 
 return [
     PandaStarter::class

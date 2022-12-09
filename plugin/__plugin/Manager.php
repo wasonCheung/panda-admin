@@ -109,7 +109,7 @@ class Manager
         }
 
         // 是否存在类
-        $class = $name . '\\Plugin';
+        $class = $name . '\\meta\\Plugin';
         $class = $namespace ? $namespace . '\\' . $class : $class;
         if (!class_exists($class)) {
             return [];
