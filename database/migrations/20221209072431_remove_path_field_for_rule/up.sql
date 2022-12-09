@@ -1,0 +1,1 @@
+alter table `{prefix}rule` drop `path`;
